@@ -1,0 +1,8 @@
+*.pyc
+dist/*
+build/*
+credentials.json
+
+*.db
+*__pycache__*
+client_secrets.json
