@@ -1,22 +1,22 @@
 class ThemeManager:
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(ThemeManager, cls).__new__(cls)
             cls._instance._init_default_values()
         return cls._instance
-    
+
     def _init_default_values(self):
-        self.BUTTONS_BG_COLOR = "#FF876C"
-        self.LABELS_TEXT_COLOR = "#FF876C"
-        self.BACKGROUND_COLOR = "#FFCFC4"
-        self.BUTTONS_HOVER_COLOR = "#D96548"
+        self.BUTTONS_BG_COLOR = "#0077B6"
+        self.LABELS_TEXT_COLOR = "#0077B6"
+        self.BACKGROUND_COLOR = "#DFF6FF"
+        self.BUTTONS_HOVER_COLOR = "#023E8A"
         self.BUTTONS_TEXT_COLOR = "white"
-        self.INPUT_SCREEN_BG_COLOR = "#FFE7E2"
-        self.INPUT_FIELDS_LABEL_COLOR = "#BF6551"
-        self.BACKGROUND_IMG = "Assets/orange_background.png"
-        
+        self.INPUT_SCREEN_BG_COLOR = "#DFF6FF"
+        self.INPUT_FIELDS_LABEL_COLOR = "#0077B6"
+        self.BACKGROUND_IMG = "Assets/blue_background.png"
+
         self.THEMES = {
             "blue": {
                 "buttons_bg": "#0077B6",
@@ -49,10 +49,11 @@ class ThemeManager:
                 "background_img": "Assets/black_background.png"
             }
         }
+
     def update_theme(self, theme_name):
         if theme_name not in self.THEMES:
             raise ValueError(f"Theme '{theme_name}' not found")
-            
+
         theme = self.THEMES[theme_name]
         self.BUTTONS_BG_COLOR = theme["buttons_bg"]
         self.LABELS_TEXT_COLOR = theme["labels_text"]
@@ -62,6 +63,3 @@ class ThemeManager:
         self.INPUT_SCREEN_BG_COLOR = theme["input_screen_bg"]
         self.INPUT_FIELDS_LABEL_COLOR = theme["input_fields_label"]
         self.BACKGROUND_IMG = theme["background_img"]
-
-
-
