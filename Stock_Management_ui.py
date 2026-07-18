@@ -131,7 +131,8 @@ class StockManagement(QMainWindow):
             ],
             back_action=self.return_to_main_menu,
             db_columns=['st_name'],
-            table_name=tables["stock"]
+            table_name=tables["stock"],
+            search_function=self.db_manager.get_stock_with_latest_price
         )
         self.card_screen.calling_manager = self
         self.stock_management_screen = self.card_screen
