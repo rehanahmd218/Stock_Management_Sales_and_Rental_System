@@ -13,7 +13,7 @@ class StockCardWidget(QFrame):
         self.parent_screen = parent_screen
         self.theme_manager = ThemeManager()
         self.initUI()
-        
+
     def initUI(self):
         self.setStyleSheet(f"""
             QFrame {{
@@ -26,40 +26,47 @@ class StockCardWidget(QFrame):
             }}
         """)
         self.setMinimumWidth(int(400*SCRN_RATIO))
-        
+
         main_layout = QVBoxLayout()
         self.setLayout(main_layout)
-        
+
         # Name and ID
         header_layout = QHBoxLayout()
         name_label = QLabel(f"📦 <b>{self.row_data[1]}</b>")
-        name_label.setStyleSheet(f"font-size: {int(30*SCRN_RATIO)}px; color: #333333; border: none;")
+        name_label.setStyleSheet(
+            f"font-size: {int(30*SCRN_RATIO)}px; color: #333333; border: none;")
         id_label = QLabel(f"🪪 ID: {self.row_data[0]}")
-        id_label.setStyleSheet(f"font-size: {int(20*SCRN_RATIO)}px; color: #888888; border: none;")
+        id_label.setStyleSheet(
+            f"font-size: {int(20*SCRN_RATIO)}px; color: #888888; border: none;")
         header_layout.addWidget(name_label)
         header_layout.addStretch()
         header_layout.addWidget(id_label)
         main_layout.addLayout(header_layout)
-        
+
         # Details
-        qty_lbl = QLabel(f"🔢 Quantity: <b>{self.row_data[3]}</b> available / {self.row_data[2]} total")
-        qty_lbl.setStyleSheet(f"font-size: {int(22*SCRN_RATIO)}px; color: #555555; border: none;")
+        qty_lbl = QLabel(
+            f"🔢 Quantity: <b>{self.row_data[3]}</b> available / {self.row_data[2]} total")
+        qty_lbl.setStyleSheet(
+            f"font-size: {int(22*SCRN_RATIO)}px; color: #555555; border: none;")
         main_layout.addWidget(qty_lbl)
-        
+
         price_lbl = QLabel(f"💰 Rental Price: <b>Rs. {self.row_data[4]}</b>")
-        price_lbl.setStyleSheet(f"font-size: {int(22*SCRN_RATIO)}px; color: #388E3C; border: none;")
+        price_lbl.setStyleSheet(
+            f"font-size: {int(22*SCRN_RATIO)}px; color: #388E3C; border: none;")
         main_layout.addWidget(price_lbl)
-        
-        date_lbl = QLabel(f"📅 Price Updated: {QDateTime.fromString(str(self.row_data[5]), DATABASE_DATETIME_FORMAT).toString(DISPLAY_DATE_TIME_FORMAT)}")
-        date_lbl.setStyleSheet(f"font-size: {int(20*SCRN_RATIO)}px; color: #888888; border: none;")
+
+        date_lbl = QLabel(
+            f"📅 Price Updated: {QDateTime.fromString(str(self.row_data[5]), DATABASE_DATETIME_FORMAT).toString(DISPLAY_DATE_TIME_FORMAT)}")
+        date_lbl.setStyleSheet(
+            f"font-size: {int(20*SCRN_RATIO)}px; color: #888888; border: none;")
         main_layout.addWidget(date_lbl)
-            
+
         main_layout.addSpacing(int(10*SCRN_RATIO))
-        
+
         # Action Buttons
         btn_layout = QHBoxLayout()
-        btn_layout.addStretch() # Push buttons to the right
-        
+        btn_layout.addStretch()  # Push buttons to the right
+
         edit_btn = QPushButton("✏️ Edit")
         edit_btn.setStyleSheet(f"""
             QPushButton {{
@@ -68,7 +75,7 @@ class StockCardWidget(QFrame):
             QPushButton:hover {{ background-color: #FFB300; }}
         """)
         edit_btn.clicked.connect(self.on_edit)
-        
+
         delete_btn = QPushButton("🗑️ Delete")
         delete_btn.setStyleSheet(f"""
             QPushButton {{
@@ -77,13 +84,14 @@ class StockCardWidget(QFrame):
             QPushButton:hover {{ background-color: #E53935; }}
         """)
         delete_btn.clicked.connect(self.on_delete)
-        
+
         btn_layout.addWidget(edit_btn)
         btn_layout.addWidget(delete_btn)
         main_layout.addLayout(btn_layout)
 
     def on_edit(self):
-        self.parent_screen.calling_manager.show_edit_stock_screen(self.row_data)
+        self.parent_screen.calling_manager.show_edit_stock_screen(
+            self.row_data)
 
     def on_delete(self):
         self.parent_screen.calling_manager.delete_single_stock(self.row_data)
@@ -104,7 +112,8 @@ class StockManagement(QMainWindow):
     def setup_stock_management_Screen(self):
         data = self.db_manager.get_stock_with_latest_price()
         if len(data) == 0 or isinstance(data, tuple):
-            QMessageBox.information(self, "No Data", "No stock items available. You can add one.")
+            QMessageBox.information(
+                self, "No Data", "No stock items available. You can add one.")
             data = []
 
         self.card_screen = CardScreen(
@@ -130,7 +139,7 @@ class StockManagement(QMainWindow):
     def generate_stock_card(self, row_data, parent_screen):
         # Prevent UI breakage if there are unexpected tuple forms
         if isinstance(row_data, str) or (isinstance(row_data, tuple) and len(row_data) < 6):
-             return QFrame()
+            return QFrame()
         return StockCardWidget(row_data, parent_screen)
 
     def refresh_stock_management_screen(self):
@@ -148,7 +157,7 @@ class StockManagement(QMainWindow):
             ("Available Quantity:", "avail_quantity_input"),
             ("Rental Price:", "price_input")
         ]
-        
+
         self.add_stock_screen, self.save_stock_button = setup_input_screen(
             self.main_stacked_widget,
             title="➕ Add New Stock",
@@ -161,14 +170,14 @@ class StockManagement(QMainWindow):
     def show_edit_stock_screen(self, stock_data):
         self.editing_stock_id = stock_data[0]
         self.current_editing_stock_price = stock_data[4]
-        
+
         form_fields = [
             ("Item Name:", "name_input"),
             ("Total Quantity:", "total_quantity_input"),
             ("Available Quantity:", "avail_quantity_input"),
             ("Rental Price:", "price_input")
         ]
-        
+
         self.add_stock_screen, self.save_stock_button = setup_input_screen(
             self.main_stacked_widget,
             title="✏️ Edit Stock",
@@ -177,7 +186,7 @@ class StockManagement(QMainWindow):
             back_action=self.return_to_stock_management,
             calling_object=self
         )
-        
+
         # Pre-fill data
         self.name_input.setText(str(stock_data[1]))
         self.total_quantity_input.setText(str(stock_data[2]))
@@ -187,19 +196,20 @@ class StockManagement(QMainWindow):
     def show_stock_prices(self):
         stock_prices = self.db_manager.get_all_stock_prices()
         if len(stock_prices) == 0:
-            QMessageBox.warning(self, "Error", "No stock items available to show prices.")
+            QMessageBox.warning(
+                self, "Error", "No stock items available to show prices.")
             return
-            
+
         TableScreen(
             stacked_widget=self.main_stacked_widget,
             title="Stock Prices History",
             headers=['Stock Name', 'Price', 'Price Updated Date'],
             table_data=stock_prices,
-            search_columns={"Search by Name": 0},
+            search_columns={"Search by Name": 1},
             button_actions=None,
             back_action=self.return_to_stock_management,
             full_data_columns=[3],
-            sortable_columns=[1,2,3],
+            sortable_columns=[1, 2, 3],
             show_pagination=True,
             db_columns=['st_name'],
             search_function=self.db_manager.get_all_stock_prices
@@ -223,13 +233,16 @@ class StockManagement(QMainWindow):
 
     def check_stock_inputs(self, name, total_quantity, avail_quantity, price):
         if not all([name, total_quantity, avail_quantity, price]):
-            QMessageBox.warning(self, "Validation Error", "Please fill in all fields")
+            QMessageBox.warning(self, "Validation Error",
+                                "Please fill in all fields")
             return False
         if has_alphabet_or_special_char(total_quantity) or has_alphabet_or_special_char(avail_quantity) or has_alphabet_or_special_char(price):
-            QMessageBox.warning(self, "Validation Error", "Quantity or Price must be a number")
+            QMessageBox.warning(self, "Validation Error",
+                                "Quantity or Price must be a number")
             return False
         if float(avail_quantity) > float(total_quantity):
-            QMessageBox.warning(self, "Validation Error", "Available quantity cannot be greater than total quantity")
+            QMessageBox.warning(
+                self, "Validation Error", "Available quantity cannot be greater than total quantity")
             return False
         return True
 
@@ -238,25 +251,28 @@ class StockManagement(QMainWindow):
         avail_quantity = self.avail_quantity_input.text()
         total_quantity = self.total_quantity_input.text()
         price = self.price_input.text()
-        
+
         if not self.check_stock_inputs(name, total_quantity, avail_quantity, price):
             return
-            
+
         current_date_time = QDateTime.currentDateTime().toString(DATABASE_DATETIME_FORMAT)
-        response = self.db_manager.insert_data(tables['stock'], columns=STOCK_DB_COLUMNS, values=[name, total_quantity, avail_quantity])
-        
-        if response[1] == False:
-            QMessageBox.warning(self, "Error", response[0])
-            return
-            
-        stock_id = self.db_manager.get_last_item(tables["stock"])[0]
-        response = self.db_manager.insert_data(tables['stock_price'], columns=STOCK_PRICE_DB_COLUMNS, values=[stock_id, price, current_date_time])
+        response = self.db_manager.insert_data(tables['stock'], columns=STOCK_DB_COLUMNS, values=[
+                                               name, total_quantity, avail_quantity])
 
         if response[1] == False:
             QMessageBox.warning(self, "Error", response[0])
             return
-            
-        QMessageBox.information(self, "Stock Saved", f"Stock '{name}' has been saved successfully!")        
+
+        stock_id = self.db_manager.get_last_item(tables["stock"])[0]
+        response = self.db_manager.insert_data(tables['stock_price'], columns=STOCK_PRICE_DB_COLUMNS, values=[
+                                               stock_id, price, current_date_time])
+
+        if response[1] == False:
+            QMessageBox.warning(self, "Error", response[0])
+            return
+
+        QMessageBox.information(self, "Stock Saved",
+                                f"Stock '{name}' has been saved successfully!")
         self.refresh_stock_management_screen()
 
     def update_existing_stock(self):
@@ -264,23 +280,26 @@ class StockManagement(QMainWindow):
         avail_quantity = self.avail_quantity_input.text()
         total_quantity = self.total_quantity_input.text()
         price = self.price_input.text()
-        
+
         if not self.check_stock_inputs(name, total_quantity, avail_quantity, price):
             return
-            
+
         stock_db_old_price = float(self.current_editing_stock_price)
         stock_table_new_price = float(price)
-        
+
         if stock_db_old_price != stock_table_new_price:
-            self.db_manager.insert_data(tables['stock_price'], columns=STOCK_PRICE_DB_COLUMNS, values=[self.editing_stock_id, price, QDateTime.currentDateTime().toString(DATABASE_DATETIME_FORMAT)])
-            
-        response = self.db_manager.update_multiple_columns(tables["stock"], columns=STOCK_DB_COLUMNS, values=[name, total_quantity, avail_quantity], item_id=self.editing_stock_id)
-        
+            self.db_manager.insert_data(tables['stock_price'], columns=STOCK_PRICE_DB_COLUMNS, values=[
+                                        self.editing_stock_id, price, QDateTime.currentDateTime().toString(DATABASE_DATETIME_FORMAT)])
+
+        response = self.db_manager.update_multiple_columns(tables["stock"], columns=STOCK_DB_COLUMNS, values=[
+                                                           name, total_quantity, avail_quantity], item_id=self.editing_stock_id)
+
         if response[1] == False:
             QMessageBox.warning(self, "Error", response[0])
             return
-            
-        QMessageBox.information(self, "Update Successful", "Stock details updated successfully.")
+
+        QMessageBox.information(self, "Update Successful",
+                                "Stock details updated successfully.")
         self.refresh_stock_management_screen()
 
     def delete_single_stock(self, row_data):
@@ -288,42 +307,47 @@ class StockManagement(QMainWindow):
             return
 
         stock_id = str(row_data[0])
-        data = self.db_manager.get_all_with_payment_status_matching(to_match_id=True, item_id=stock_id, matching_column="stock_id")
-        
+        data = self.db_manager.get_all_with_payment_status_matching(
+            to_match_id=True, item_id=stock_id, matching_column="stock_id")
+
         if data and len(data) > 0:
-            QMessageBox.warning(self, 'Deletion Error', "This Stock Item is rented by someone. Don't delete it now.")
+            QMessageBox.warning(
+                self, 'Deletion Error', "This Stock Item is rented by someone. Don't delete it now.")
             if not confirm_deletion(self, "Confirmation", 'You still want to delete it?\nIt will delete all the values where this stock is used'):
                 return
-                
-        response = self.db_manager.delete_single_item(stock_id, table_name=tables["stock"])
+
+        response = self.db_manager.delete_single_item(
+            stock_id, table_name=tables["stock"])
         if not response[1]:
             QMessageBox.warning(self, "Error", response[0])
             return
-            
-        QMessageBox.information(self, "Delete Successful", "Stock item has been deleted successfully.")
+
+        QMessageBox.information(self, "Delete Successful",
+                                "Stock item has been deleted successfully.")
         self.refresh_stock_management_screen()
 
     def delete_all_stock(self):
         if not confirm_deletion(self, "Delete All Stock", "Are you sure you want to delete all stock items?"):
             return
-            
+
         data = self.db_manager.get_all_with_payment_status_matching()
         if data and len(data) > 0:
-            QMessageBox.warning(self, "Error", "Some stock items have been rented out. Please return them before deleting all stock items.")
+            QMessageBox.warning(
+                self, "Error", "Some stock items have been rented out. Please return them before deleting all stock items.")
             if not confirm_deletion(self, "Confirmation", 'You still want to delete it?\nIt will delete all the values where this stock is used'):
                 return
-                
+
         response = self.db_manager.delete_all_items(tables["stock"])
         if response[1] == False:
             QMessageBox.warning(self, "Error", response[0])
             return
-            
-        QMessageBox.information(self, "Delete All Successful", "All stock items have been deleted successfully.")
+
+        QMessageBox.information(self, "Delete All Successful",
+                                "All stock items have been deleted successfully.")
         self.refresh_stock_management_screen()
 
     def return_to_main_menu(self):
         self.main_stacked_widget.setCurrentWidget(self.main_menu_screen)
-    
+
     def return_to_stock_management(self):
         self.main_stacked_widget.setCurrentWidget(self.stock_management_screen)
-
