@@ -195,7 +195,7 @@ class StockManagement(QMainWindow):
             title="Stock Prices History",
             headers=['Stock Name', 'Price', 'Price Updated Date'],
             table_data=stock_prices,
-            search_columns={"Search by Name": 1},
+            search_columns={"Search by Name": 0},
             button_actions=None,
             back_action=self.return_to_stock_management,
             full_data_columns=[3],
