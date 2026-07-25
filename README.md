@@ -7,14 +7,11 @@
 ## 🎬 Video Demo
 
 
+[![Watch the video](https://img.youtube.com/vi/s_Of3eHbXEE0/maxresdefault.jpg)](https://youtu.be/s_Of3eHbXEE)
 
-<a href="https://youtu.be/s_Of3eHbXEE" target="_blank">
-  <img src="https://img.youtube.com/vi/s_Of3eHbXEE/maxresdefault.jpg"
-       alt="Watch Demo"
-       width="900">
-</a>
-
-
+<p align="center">
+  <a href="https://youtu.be/s_Of3eHbXEE"><strong>▶️ Watch Video on YouTube</strong></a>
+</p>
 
 ---
 
